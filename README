@@ -1,0 +1,15 @@
+Hadecurt
+=================================
+
+A message source produces a stream of generic json messages.
+This could eventually be from sqs.
+
+Parse with play json inception.
+
+Define several message groups that each gather a set of related messages (methods: groupItems, buildGroup).
+
+Enrich message group with info from two services returning futures.
+
+Configure with ReaderT / Kleisli
+
+Display assembled, enriched message groups with angular, ui-router, ng-table
