@@ -1,15 +1,21 @@
 Hadecurt
 =================================
 
-A message source produces a stream of generic json messages.
-This could eventually be from sqs.
+A message source provides a set of generic json messages.
+Initially this can be sourced from a file, but eventually it could come from a query to psql or Amazon Redshift.
+    File contains single JSON source,
+    MessageSource trait produces individual messages as JSON Strings,
+    FileMessageSource gets messages from file.
 
-Parse with play json inception.
+Parse messages with play json inception.
+    MessageJSONConverter parses message JSON string into Message instances
 
-Define several message groups that each gather a set of related messages (methods: groupItems, buildGroup).
+Define event builders that each know how to combine multiple messages into a single event (methods: discriminator, buildEvent).
+    Provide the discriminator function, f, for the standard groupBy function: def groupBy[K](f: (A) ⇒ K): Map[K, List[A]]
+    Build an appropriate Event from a sequence of Message.
 
-Enrich message group with info from two services returning futures.
+Enrich event with info from two services returning futures.
 
 Configure with ReaderT / Kleisli
 
-Display assembled, enriched message groups with angular, ui-router, ng-table
+Display assembled, enriched events with angular, ui-router, ng-table
