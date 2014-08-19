@@ -1,7 +1,6 @@
-Hadecurt
-========
+# Hadecurt
 
-h3. Hadecurt is an application that reads a sequence of messages from some kind of source and performs some processing on them in order to display them as a sequence of events. This acts as a window into a data warehouse.
+Hadecurt is an application that reads a sequence of messages from some kind of source and performs some processing on them in order to display them as a sequence of events. This acts as a window into a data warehouse.
 
 A message source provides a set of generic json messages.
 Initially this can be sourced from a file, but eventually it could come from a query to psql or Amazon Redshift.
