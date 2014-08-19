@@ -10,9 +10,13 @@ Initially this can be sourced from a file, but eventually it could come from a q
 Parse messages with play json inception.
     MessageJSONConverter parses message JSON string into Message instances
 
-Define event builders that each know how to combine multiple messages into a single event (methods: discriminator, buildEvent).
+Define event builders that each know how to combine multiple messages into a single event
+(methods: groupByDiscriminator, buildEvent).
     Provide the discriminator function, f, for the standard groupBy function: def groupBy[K](f: (A) ⇒ K): Map[K, List[A]]
     Build an appropriate Event from a sequence of Message.
+
+Convert a sequence of messages into a sequence of events with EventConsolidator, which is provided with a list
+of event builders.
 
 Enrich event with info from two services returning futures.
 

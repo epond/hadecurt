@@ -7,9 +7,7 @@ trait EventConsolidator {
   /**
    * These are the kinds of event that the system knows how to build.
    */
-  val eventBuilders: Seq[EventBuilder] = List(
-    VideoViewEventBuilder
-  )
+  val eventBuilders: Seq[EventBuilder]
 
   /**
    * Takes a sequence of messages and translates them into events according to the list of EventBuilders.
@@ -42,4 +40,4 @@ trait EventConsolidator {
   }
 }
 
-object EventConsolidatorImpl extends EventConsolidator
+object EventConsolidatorImpl extends EventConsolidator with VideoEventBuilders

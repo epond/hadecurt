@@ -4,13 +4,12 @@ import event.EventConsolidatorImpl
 import json.{EventJSONConverter, MessageJSONConverter}
 import play.api._
 import play.api.mvc._
-import message.FileMessageSource
+import message._
 
-object EventController extends Controller with FileMessageSource {
+object EventController extends Controller with DummyMessageSource {
   val getEvents = Action { request =>
     val messages = getMessages.map(MessageJSONConverter.fromJSON(_))
-                              .filter(_.isDefined)
-                              .map(_.get)
+                              .collect{case Some(e) => e}
     val events = EventConsolidatorImpl.buildEvents(messages)
     Ok(EventJSONConverter.toJSON(events))
   }
