@@ -6,25 +6,31 @@ import play.api._
 import play.api.mvc._
 import message._
 import service.{EnrichmentServiceImpl, EnrichmentService}
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 trait EventController {
   // Explicitly typed self references let us cake these dependencies differently in production and test
   this: Controller with MessageSource with EnrichmentService =>
 
-  val getEvents = Action { request =>
+  val getEvents = Action.async { request =>
 
     // Read messages from json message source
     val messages = getMessages.map(MessageJSONConverter.fromJSON(_))
                               .collect{case Some(e) => e}
 
     // Convert messages into events
-    val events = EventConsolidatorImpl.buildEvents(messages)
+    val rawEvents = EventConsolidatorImpl.buildEvents(messages)
 
-    // Enrich events
-    val enrichedEvents = events.map(enrich(_))
+    // Enrich events individually then sequence into a single Future
+    val enrichedEvents = Future.sequence(rawEvents.map(enrich(_)))
 
-    // Output events as json
-    Ok(EventJSONConverter.toJSON(enrichedEvents))
+    for {
+      events <- enrichedEvents
+      // Output events as json
+      eventsJson = EventJSONConverter.toJSON(events)
+
+    } yield Ok(eventsJson)
 
   }
 }
