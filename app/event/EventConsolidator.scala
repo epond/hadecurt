@@ -40,4 +40,4 @@ trait EventConsolidator {
   }
 }
 
-object EventConsolidatorImpl extends EventConsolidator with VideoEventBuilders
+trait EventConsolidatorImpl extends EventConsolidator with VideoEventBuilders
