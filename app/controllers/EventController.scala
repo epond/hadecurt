@@ -15,20 +15,21 @@ trait EventController {
 
   val getEvents = Action.async { request =>
 
-    // Read messages from json message source
-    val messages = getMessages.map(MessageJSONConverter.fromJSON(_))
-                              .collect{case Some(e) => e}
-
-    // Convert messages into events
-    val rawEvents = EventConsolidatorImpl.buildEvents(messages)
-
-    // Enrich events individually then sequence into a single Future
-    val enrichedEvents = Future.sequence(rawEvents.map(enrich(_)))
-
     for {
-      events <- enrichedEvents
+
+      // Read messages from json message source
+      messageJson <- getMessages
+      messages = messageJson.map(MessageJSONConverter.fromJSON(_))
+                            .collect{case Some(e) => e}
+
+      // Convert messages into events
+      rawEvents = EventConsolidatorImpl.buildEvents(messages)
+
+      // Enrich events individually
+      enrichedEvents <- Future.sequence(rawEvents.map(enrich(_)))
+
       // Output events as json
-      eventsJson = EventJSONConverter.toJSON(events)
+      eventsJson = EventJSONConverter.toJSON(enrichedEvents)
 
     } yield Ok(eventsJson)
 
