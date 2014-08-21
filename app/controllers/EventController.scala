@@ -36,9 +36,7 @@ trait EventController {
       rawEvents = buildEvents(messages)
 
       // Enrich events individually and sequence into a single Future
-      enrichedEvents <- ReaderTFuture[AppConfig, Seq[Event]] { config =>
-        Future.sequence(rawEvents.map(enrich(_)))
-      }
+      enrichedEvents <- ReaderTFuture.sequence(rawEvents.map(enrich(_)))
 
       // Convert events to json
       eventsJson = EventJSONConverter.toJSON(enrichedEvents)

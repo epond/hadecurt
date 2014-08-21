@@ -7,16 +7,16 @@ trait EventConsolidator {
   /**
    * These are the kinds of event that the system knows how to build.
    */
-  val eventBuilders: Seq[EventBuilder]
+  val eventBuilders: List[EventBuilder]
 
   /**
-   * Takes a sequence of messages and translates them into events according to the list of EventBuilders.
+   * Takes a list of messages and translates them into events according to the list of EventBuilders.
    *
    * @param messages raw messages of all types
    * @return events as a result of combining related messages
    */
-  def buildEvents(messages: Seq[Message]): Seq[Event] = {
-    val applyEventBuilder: (EventBuilder, (Seq[Event], Seq[Message])) => (Seq[Event], Seq[Message]) = {
+  def buildEvents(messages: List[Message]): List[Event] = {
+    val applyEventBuilder: (EventBuilder, (List[Event], List[Message])) => (List[Event], List[Message]) = {
       case (builder, (events, messages)) => {
         val groupedMessages = messages.groupBy(builder.groupByDiscriminator)
         val messageGroups = groupedMessages.filter{
@@ -36,7 +36,7 @@ trait EventConsolidator {
       }
     }
 
-    eventBuilders.foldRight[(Seq[Event], Seq[Message])]((Nil, messages))(applyEventBuilder)._1
+    eventBuilders.foldRight[(List[Event], List[Message])]((Nil, messages))(applyEventBuilder)._1
   }
 }
 

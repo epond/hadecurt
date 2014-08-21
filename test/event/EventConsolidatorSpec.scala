@@ -8,7 +8,7 @@ class EventConsolidatorSpec extends Specification {
   "An EventConsolidator with just a single SingleMessageEventBuilder" should {
     "given a sequence of 3 messages across 3 event ids then build a sequence of 3 events" in {
       object SimpleEventConsolidator extends EventConsolidator {
-        override val eventBuilders: Seq[EventBuilder] = List(
+        override val eventBuilders: List[EventBuilder] = List(
           SingleMessageEventBuilder
         )
       }
@@ -26,7 +26,7 @@ class EventConsolidatorSpec extends Specification {
 
     "given a sequence of 3 messages across 2 event ids then build a sequence of 2 events" in {
       object SimpleEventConsolidator extends EventConsolidator {
-        override val eventBuilders: Seq[EventBuilder] = List(
+        override val eventBuilders: List[EventBuilder] = List(
           SingleMessageEventBuilder
         )
       }
@@ -47,7 +47,7 @@ class EventConsolidatorSpec extends Specification {
   "An EventConsolidator with EventBuilders for two different message types" should {
     "given a variety of messages then build single-message events for the known message types" in {
       object MyEventConsolidator extends EventConsolidator {
-        override val eventBuilders: Seq[EventBuilder] = List(
+        override val eventBuilders: List[EventBuilder] = List(
           ByMessageTypeEventBuilder("t1"), ByMessageTypeEventBuilder("t2")
         )
       }
@@ -64,7 +64,7 @@ class EventConsolidatorSpec extends Specification {
 
     "given a variety of messages then build multi-message events for the known message types" in {
       object MyEventConsolidator extends EventConsolidator {
-        override val eventBuilders: Seq[EventBuilder] = List(
+        override val eventBuilders: List[EventBuilder] = List(
           ByMessageTypeEventBuilder("t1"), ByMessageTypeEventBuilder("t2")
         )
       }
@@ -88,7 +88,7 @@ class EventConsolidatorSpec extends Specification {
 
   object SingleMessageEventBuilder extends EventBuilder {
     override def groupByDiscriminator = m => KnownEvent(m.eventId)
-    override def buildEvent(messages: Seq[Message]) = messages match {
+    override def buildEvent(messages: List[Message]) = messages match {
       case m :: _ => Some(Event(m.eventId, m.payload))
       case Nil => None
     }
@@ -99,7 +99,7 @@ class EventConsolidatorSpec extends Specification {
       case Message(`messageType`, eventId, _) => KnownEvent(eventId)
       case _ => UnknownEvent
     }
-    override def buildEvent(messages: Seq[Message]) = messages match {
+    override def buildEvent(messages: List[Message]) = messages match {
       case m :: _ => {
         val description = messages.foldRight("")((m, acc) => m.payload ++ acc)
         Some(Event(m.eventId, description))

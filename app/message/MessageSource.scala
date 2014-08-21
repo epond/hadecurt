@@ -12,21 +12,21 @@ trait MessageSource {
   /**
    * produces individual messages as JSON Strings
    */
-  def getMessages: ReaderTFuture[AppConfig, Seq[String]]
+  def getMessages: ReaderTFuture[AppConfig, List[String]]
 }
 
 trait FileMessageSource extends MessageSource {
   private def allMessages: String = "" // read from file
 
-  private def breakUp(messages: String): Seq[String] = Nil // split at top level of JSON
+  private def breakUp(messages: String): List[String] = Nil // split at top level of JSON
 
-  override def getMessages = ReaderTFuture[AppConfig, Seq[String]] { config =>
+  override def getMessages = ReaderTFuture[AppConfig, List[String]] { config =>
     Future(breakUp(allMessages))
   }
 }
 
 trait DummyMessageSource extends MessageSource {
-  override def getMessages = ReaderTFuture[AppConfig, Seq[String]] { config =>
+  override def getMessages = ReaderTFuture[AppConfig, List[String]] { config =>
     Future(List(
       """{"messageType": "videoView", "eventId": "1", "payload": "a"}""",
       """{"messageType": "videoView", "eventId": "2", "payload": "b"}"""

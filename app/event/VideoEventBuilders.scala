@@ -3,7 +3,7 @@ package event
 import message.{UnknownEvent, Message, KnownEvent}
 
 trait VideoEventBuilders {
-  val eventBuilders: Seq[EventBuilder] = List(
+  val eventBuilders: List[EventBuilder] = List(
     VideoViewEventBuilder
   )
 }
@@ -17,7 +17,7 @@ object VideoViewEventBuilder extends EventBuilder {
     case Message("videoView", eventId, _) => KnownEvent(eventId)
     case _ => UnknownEvent
   }
-  override def buildEvent(messages: Seq[Message]) = messages match {
+  override def buildEvent(messages: List[Message]) = messages match {
     case Message("videoView", id, payload) :: _ => Some(Event(id, payload))
     case _ => None
   }

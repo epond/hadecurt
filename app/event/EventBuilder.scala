@@ -16,5 +16,5 @@ trait EventBuilder {
    * @param messages the messages that comprise this event
    * @return The event if it could be built, otherwise None
    */
-  def buildEvent(messages: Seq[Message]): Option[Event]
+  def buildEvent(messages: List[Message]): Option[Event]
 }
