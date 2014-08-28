@@ -9,7 +9,7 @@ trait JSONConverter {
   def eventToJSON(events: Seq[Event]): String
 }
 
-trait JSONConverterImpl extends JSONConverter {
+trait PlayJSONConverter extends JSONConverter {
 
   implicit val messageJsonFormat: Format[Message] = Json.format[Message]
   implicit val eventJsonFormat:   Format[Event] =   Json.format[Event]

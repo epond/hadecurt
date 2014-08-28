@@ -50,4 +50,4 @@ trait EventController {
 }
 
 // This EventController is caked to use production dependencies
-object EventController extends Controller with EventController with HardcodedMessageSource with EventConsolidatorImpl with EnrichmentServiceImpl with JSONConverterImpl
+object EventController extends Controller with EventController with HardcodedMessageSource with EventConsolidatorImpl with EnrichmentServiceImpl with PlayJSONConverter
