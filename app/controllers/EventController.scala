@@ -3,7 +3,7 @@ package controllers
 import config.AppConfig
 import config.AppConfig.ReaderTFuture
 import event.{EventConsolidator, Event, EventConsolidatorImpl}
-import json.{EventJSONConverter, MessageJSONConverter}
+import json._
 import play.api._
 import play.api.mvc._
 import message._
@@ -16,7 +16,7 @@ import scalaz.contrib.std._
 trait EventController {
 
   // Explicitly typed self references let us cake these dependencies differently in production and test
-  this: Controller with MessageSource with EventConsolidator with EnrichmentService =>
+  this: Controller with MessageSource with EventConsolidator with EnrichmentService with JSONConverter =>
 
   val getEvents = Action.async { request =>
 
@@ -29,7 +29,7 @@ trait EventController {
 
       // Read messages from json message source
       messageJson <- getMessages
-      messages = messageJson.map(MessageJSONConverter.fromJSON(_))
+      messages = messageJson.map(messageFromJSON(_))
                             .collect{case Some(e) => e}
 
       // Convert messages into events
@@ -39,7 +39,7 @@ trait EventController {
       enrichedEvents <- ReaderTFuture.sequence(rawEvents.map(enrich(_)))
 
       // Convert events to json
-      eventsJson = EventJSONConverter.toJSON(enrichedEvents)
+      eventsJson = eventToJSON(enrichedEvents)
 
     } yield Ok(eventsJson)
 
@@ -50,4 +50,4 @@ trait EventController {
 }
 
 // This EventController is caked to use production dependencies
-object EventController extends Controller with EventController with EventConsolidatorImpl with EnrichmentServiceImpl with DummyMessageSource
+object EventController extends Controller with EventController with HardcodedMessageSource with EventConsolidatorImpl with EnrichmentServiceImpl with JSONConverterImpl

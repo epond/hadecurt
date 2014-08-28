@@ -25,7 +25,7 @@ trait FileMessageSource extends MessageSource {
   }
 }
 
-trait DummyMessageSource extends MessageSource {
+trait HardcodedMessageSource extends MessageSource {
   override def getMessages = ReaderTFuture[AppConfig, List[String]] { config =>
     Future(List(
       """{"messageType": "videoView", "eventId": "1", "payload": "a"}""",

@@ -86,25 +86,26 @@ class EventConsolidatorSpec extends Specification {
     }
   }
 
-  object SingleMessageEventBuilder extends EventBuilder {
-    override def groupByDiscriminator = m => KnownEvent(m.eventId)
-    override def buildEvent(messages: List[Message]) = messages match {
-      case m :: _ => Some(Event(m.eventId, m.payload))
-      case Nil => None
-    }
-  }
+}
 
-  case class ByMessageTypeEventBuilder(messageType: String) extends EventBuilder {
-    override def groupByDiscriminator = {
-      case Message(`messageType`, eventId, _) => KnownEvent(eventId)
-      case _ => UnknownEvent
+object SingleMessageEventBuilder extends EventBuilder {
+  override def groupByDiscriminator = m => KnownEvent(m.eventId)
+  override def buildEvent(messages: List[Message]) = messages match {
+    case m :: _ => Some(Event(m.eventId, m.payload))
+    case Nil => None
+  }
+}
+
+case class ByMessageTypeEventBuilder(messageType: String) extends EventBuilder {
+  override def groupByDiscriminator = {
+    case Message(`messageType`, eventId, _) => KnownEvent(eventId)
+    case _ => UnknownEvent
+  }
+  override def buildEvent(messages: List[Message]) = messages match {
+    case m :: _ => {
+      val description = messages.foldRight("")((m, acc) => m.payload ++ acc)
+      Some(Event(m.eventId, description))
     }
-    override def buildEvent(messages: List[Message]) = messages match {
-      case m :: _ => {
-        val description = messages.foldRight("")((m, acc) => m.payload ++ acc)
-        Some(Event(m.eventId, description))
-      }
-      case Nil => None
-    }
+    case Nil => None
   }
 }
