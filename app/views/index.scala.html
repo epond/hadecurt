@@ -1,5 +1,24 @@
 @main("Welcome to Hadecurt") {
 
-    Events will appear here
+<h1>Events</h1>
+
+<div ng-controller="DemoCtrl">
+
+    <p><strong>Page:</strong> {{tableParams.page()}}
+    <p><strong>Count per page:</strong> {{tableParams.count()}}
+
+
+        <table ng-table="tableParams" class="table ng-table-responsive">
+            <tr ng-repeat="event in $data">
+                <td data-title="'Id'">
+                    {{event.id}}
+                </td>
+                <td data-title="'Description'">
+                    {{event.description}}
+                </td>
+            </tr>
+        </table>
+</div>
+
 
 }
