@@ -16,9 +16,9 @@ trait MessageSource {
 }
 
 trait FileMessageSource extends MessageSource {
-  private def allMessages: String = "" // read from file
+  private def allMessages: String = "" // TODO read from file
 
-  private def breakUp(messages: String): List[String] = Nil // split at top level of JSON
+  private def breakUp(messages: String): List[String] = Nil // TODO split at top level of JSON
 
   override def getMessages = ReaderTFuture[AppConfig, List[String]] { config =>
     Future(breakUp(allMessages))
