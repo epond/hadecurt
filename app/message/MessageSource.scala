@@ -10,26 +10,26 @@ import Scalaz._
 
 trait MessageSource {
   /**
-   * produces individual messages as JSON Strings
+   * produces message chunks
    */
-  def getMessages: ReaderTFuture[AppConfig, List[String]]
+  def getMessages: ReaderTFuture[AppConfig, List[Message]]
 }
 
 trait FileMessageSource extends MessageSource {
   private def allMessages: String = "" // TODO read from file
 
-  private def breakUp(messages: String): List[String] = Nil // TODO split at top level of JSON
+  private def breakUp(messages: String): List[Message] = Nil // TODO split at top level of JSON
 
-  override def getMessages = ReaderTFuture[AppConfig, List[String]] { config =>
+  override def getMessages = ReaderTFuture[AppConfig, List[Message]] { config =>
     Future(breakUp(allMessages))
   }
 }
 
 trait HardcodedMessageSource extends MessageSource {
-  override def getMessages = ReaderTFuture[AppConfig, List[String]] { config =>
-    Future(List(
-      """{"messageType": "videoView", "eventId": "1", "payload": "a"}""",
-      """{"messageType": "videoView", "eventId": "2", "payload": "b"}"""
-    ))
+  override def getMessages = ReaderTFuture[AppConfig, List[Message]] { config =>
+    val messages = (1 to config.messageChunkSize).toList.map{ index =>
+      Message("videoView", index.toString, "payload" + index)
+    }
+    Future(messages)
   }
 }

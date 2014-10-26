@@ -27,10 +27,8 @@ trait EventController {
     // the required result of our computation which has type Future[Result]
     val resultProcessor: ReaderTFuture[AppConfig, Result] = for {
 
-      // Read messages from json message source
-      messageJson <- getMessages
-      messages = messageJson.map(messageFromJSON(_))
-                            .collect{case Some(e) => e}
+      // Read messages from message source
+      messages <- getMessages
 
       // Convert messages into events
       rawEvents = buildEvents(messages)

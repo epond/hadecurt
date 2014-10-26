@@ -4,16 +4,16 @@ Hadecurt is an application that reads a sequence of messages from some kind of s
 them in order to display them as a sequence of events. This could be used as a window into a data warehouse, but its
 intention is so I can play around with some functional concepts such as monadic composition.
 
-A message source provides a set of generic json messages.
-Initially this can be sourced from a file, but eventually it could come from a query to psql or Amazon Redshift.
+A message source provides messages in chunks, the size of which is set in application configuration.
+Initially messages can be sourced from a file, but eventually they could come from a query to psql or Amazon Redshift.
 
- * `MessageSource` trait produces individual messages as JSON Strings.
+ * `MessageSource` trait produces message chunk as a list of message.
  * `HardcodedMessageSource` has hardcoded messages to aid development.
  * `FileMessageSource` gets messages from file.
 
-Perform message and event JSON conversion with play json inception.
+Perform JSON conversion with play json inception.
 
- * `JSONConverter` parses message JSON string into Message instances, and produces event JSON from event instances.
+ * `JSONConverter` produces event JSON from event instances.
 
 Define event builders that each know how to combine multiple messages into a single event
 (methods: `groupByDiscriminator`, `buildEvent`).
